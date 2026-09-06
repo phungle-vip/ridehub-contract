@@ -4,7 +4,7 @@ Repository quản lý hợp đồng giao tiếp (contracts, API schemas, Avro ev
 
 ## Trách nhiệm (Ownership)
 - Là **Source of Truth** duy nhất cho các đặc tả giao tiếp giữa các microservices.
-- Sở hữu OpenAPI, AsyncAPI, Avro schemas, JSON schemas và các payload examples.
+- Sở hữu OpenAPI, AsyncAPI, Avro schemas, JSON schemas.
 - Có versioning và backward compatibility policy rõ ràng.
 - **Không** chứa runtime business logic, database queries, Kafka connections, hay thông tin bí mật/secret môi trường.
 
@@ -17,8 +17,8 @@ ridehub-contract/
 │   ├── asyncapi/       # Định nghĩa Event-driven specs (AsyncAPI)
 │   ├── avro/           # Avro schemas (.avsc) cho Kafka messages
 │   └── json-schema/    # JSON schemas dùng chung
-├── examples/           # Các mẫu payload request/response/event
-└── contract-tests/     # Schema validation và contract test suites
+├── examples/           # Các mẫu payload request/response/event JSON
+└── contract-tests/     # Script kiểm tra cú pháp và validate contract
 ```
 
 ## Luồng hoạt động (Workflow)

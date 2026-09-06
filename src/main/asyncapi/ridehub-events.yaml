@@ -1,0 +1,272 @@
+asyncapi: 3.0.0
+info:
+  title: RideHub Event-Driven API
+  version: 0.1.0
+  description: |
+    AsyncAPI contract cho hệ thống event-driven messaging của RideHub.
+    Tất cả events sử dụng Avro EventEnvelope wrapper với JSON payload bên trong.
+  contact:
+    name: RideHub Platform Team
+
+defaultContentType: application/avro
+
+channels:
+  # ─── ms_booking ───────────────────────────────────────────
+  bookingEvents:
+    address: msbooking.events
+    description: Events phát sinh từ booking lifecycle
+    messages:
+      bookingCreated:
+        $ref: '#/components/messages/BookingCreated'
+      bookingUpdated:
+        $ref: '#/components/messages/BookingUpdated'
+      bookingDeleted:
+        $ref: '#/components/messages/BookingDeleted'
+
+  bookingDlq:
+    address: msbooking.events.dlq
+    description: Dead Letter Queue cho booking events xử lý thất bại
+
+  # ─── ms_user ──────────────────────────────────────────────
+  userEvents:
+    address: msuser.events
+    description: Events phát sinh từ user lifecycle
+    messages:
+      userCreated:
+        $ref: '#/components/messages/UserCreated'
+      userUpdated:
+        $ref: '#/components/messages/UserUpdated'
+      userDeleted:
+        $ref: '#/components/messages/UserDeleted'
+
+  userDlq:
+    address: msuser.events.dlq
+    description: Dead Letter Queue cho user events xử lý thất bại
+
+  # ─── ms_route ─────────────────────────────────────────────
+  routeEvents:
+    address: msroute.events
+    description: Events phát sinh từ route lifecycle
+    messages:
+      routeCreated:
+        $ref: '#/components/messages/RouteCreated'
+      routeUpdated:
+        $ref: '#/components/messages/RouteUpdated'
+      routeDeleted:
+        $ref: '#/components/messages/RouteDeleted'
+
+  routeDlq:
+    address: msroute.events.dlq
+    description: Dead Letter Queue cho route events xử lý thất bại
+
+  # ─── ms_promotion ─────────────────────────────────────────
+  promotionEvents:
+    address: mspromotion.events
+    description: Events phát sinh từ promotion lifecycle
+    messages:
+      promotionCreated:
+        $ref: '#/components/messages/PromotionCreated'
+      promotionUpdated:
+        $ref: '#/components/messages/PromotionUpdated'
+      promotionDeleted:
+        $ref: '#/components/messages/PromotionDeleted'
+
+  promotionDlq:
+    address: mspromotion.events.dlq
+    description: Dead Letter Queue cho promotion events xử lý thất bại
+
+  # ─── Cross-service ────────────────────────────────────────
+  jobCompletion:
+    address: job-completion
+    description: Notification khi async job hoàn thành
+
+operations:
+  # ── Booking operations ──
+  publishBookingEvent:
+    action: send
+    channel:
+      $ref: '#/channels/bookingEvents'
+    summary: ms_booking publishes booking lifecycle events
+    messages:
+      - $ref: '#/channels/bookingEvents/messages/bookingCreated'
+      - $ref: '#/channels/bookingEvents/messages/bookingUpdated'
+      - $ref: '#/channels/bookingEvents/messages/bookingDeleted'
+
+  consumeBookingEvent:
+    action: receive
+    channel:
+      $ref: '#/channels/bookingEvents'
+    summary: Subscribe to booking events
+
+  # ── User operations ──
+  publishUserEvent:
+    action: send
+    channel:
+      $ref: '#/channels/userEvents'
+    summary: ms_user publishes user lifecycle events
+
+  consumeUserEvent:
+    action: receive
+    channel:
+      $ref: '#/channels/userEvents'
+    summary: Subscribe to user events
+
+  # ── Route operations ──
+  publishRouteEvent:
+    action: send
+    channel:
+      $ref: '#/channels/routeEvents'
+    summary: ms_route publishes route lifecycle events
+
+  consumeRouteEvent:
+    action: receive
+    channel:
+      $ref: '#/channels/routeEvents'
+    summary: Subscribe to route events
+
+  # ── Promotion operations ──
+  publishPromotionEvent:
+    action: send
+    channel:
+      $ref: '#/channels/promotionEvents'
+    summary: ms_promotion publishes promotion lifecycle events
+
+  consumePromotionEvent:
+    action: receive
+    channel:
+      $ref: '#/channels/promotionEvents'
+    summary: Subscribe to promotion events
+
+components:
+  messages:
+    # ─── Booking Messages ───────────────────────────────────
+    BookingCreated:
+      name: booking.created
+      title: Booking Created
+      summary: Phát sinh khi booking mới được tạo
+      contentType: application/avro
+      headers:
+        type: object
+        properties:
+          kafka_receivedMessageKey:
+            type: string
+            description: Unique key cho message (booking ID hoặc UUID)
+          serviceName:
+            type: string
+            description: Tên service phát event
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    BookingUpdated:
+      name: booking.updated
+      title: Booking Updated
+      summary: Phát sinh khi booking được cập nhật (status change, payment, etc.)
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    BookingDeleted:
+      name: booking.deleted
+      title: Booking Deleted
+      summary: Phát sinh khi booking bị soft-delete
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    # ─── User Messages ──────────────────────────────────────
+    UserCreated:
+      name: user.created
+      title: User Created
+      summary: Phát sinh khi user mới đăng ký thành công
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    UserUpdated:
+      name: user.updated
+      title: User Updated
+      summary: Phát sinh khi thông tin user được cập nhật
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    UserDeleted:
+      name: user.deleted
+      title: User Deleted
+      summary: Phát sinh khi user bị soft-delete
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    # ─── Route Messages ─────────────────────────────────────
+    RouteCreated:
+      name: route.created
+      title: Route Created
+      summary: Phát sinh khi tuyến đường mới được tạo
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    RouteUpdated:
+      name: route.updated
+      title: Route Updated
+      summary: Phát sinh khi tuyến đường được cập nhật
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    RouteDeleted:
+      name: route.deleted
+      title: Route Deleted
+      summary: Phát sinh khi tuyến đường bị soft-delete
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    # ─── Promotion Messages ─────────────────────────────────
+    PromotionCreated:
+      name: promotion.created
+      title: Promotion Created
+      summary: Phát sinh khi chương trình khuyến mãi mới được tạo
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    PromotionUpdated:
+      name: promotion.updated
+      title: Promotion Updated
+      summary: Phát sinh khi chương trình khuyến mãi được cập nhật
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+    PromotionDeleted:
+      name: promotion.deleted
+      title: Promotion Deleted
+      summary: Phát sinh khi chương trình khuyến mãi bị soft-delete
+      contentType: application/avro
+      payload:
+        $ref: '#/components/schemas/EventEnvelope'
+
+  schemas:
+    EventEnvelope:
+      type: object
+      description: |
+        Avro envelope wrapper cho tất cả Kafka events.
+        Schema Avro: src/main/avro/common/EventEnvelope.avsc
+      properties:
+        eventName:
+          type: string
+          description: "Tên domain event (vd: booking.created, user.updated)"
+          examples:
+            - booking.created
+            - user.deleted
+            - route.updated
+        payload:
+          type: string
+          nullable: true
+          description: Business payload serialize dưới dạng JSON string
+        payloadType:
+          type: string
+          nullable: true
+          description: "FQCN của payload class (vd: com.ridehub.booking.service.dto.BookingDTO)"

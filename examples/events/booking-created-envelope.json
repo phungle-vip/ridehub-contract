@@ -1,0 +1,6 @@
+{
+  "eventName": "booking.created",
+  "payload": "{\"id\":1001,\"bookingCode\":\"BK-20260906-001\",\"status\":\"PENDING\",\"quantity\":2,\"totalAmount\":250000.00,\"bookedAt\":\"2026-09-06T10:00:00Z\",\"customerId\":\"550e8400-e29b-41d4-a716-446655440000\",\"tripId\":42,\"lockGroupId\":\"lock-grp-999\",\"createdAt\":\"2026-09-06T10:00:00Z\"}",
+  "payloadType": "com.ridehub.booking.service.dto.BookingDTO"
+}
+

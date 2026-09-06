@@ -1,0 +1,147 @@
+openapi: 3.0.3
+info:
+  title: RideHub Route Service API
+  version: 0.1.0
+  description: API contract cho ms_route - Quản lý tuyến đường, chuyến đi, trạm đón trả, khóa chỗ và xe.
+servers:
+  - url: http://localhost:8082/api
+    description: Local Dev Server
+  - url: https://apigateway.phungvip.io.vn/services/msroute/api
+    description: Gateway Proxy
+
+paths:
+  /routes:
+    get:
+      summary: Lấy danh sách tuyến đường
+      operationId: getAllRoutes
+      tags:
+        - route-resource
+      responses:
+        '200':
+          description: Danh sách tuyến đường
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RouteDTO'
+    post:
+      summary: Tạo mới tuyến đường
+      operationId: createRoute
+      tags:
+        - route-resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RouteDTO'
+      responses:
+        '201':
+          description: Tuyến đường đã tạo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteDTO'
+
+  /trips:
+    get:
+      summary: Lấy danh sách chuyến đi
+      operationId: getAllTrips
+      tags:
+        - trip-resource
+      parameters:
+        - name: routeId
+          in: query
+          schema:
+            type: integer
+            format: int64
+        - name: departureDate
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Danh sách chuyến đi
+
+  /seat-locks/lock:
+    post:
+      summary: Khóa ghế giữ chỗ cho booking
+      operationId: lockSeats
+      tags:
+        - seat-lock-resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeatLockRequestDTO'
+      responses:
+        '200':
+          description: Ghế đã được khóa tạm thời
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatLockResponseDTO'
+
+components:
+  schemas:
+    RouteDTO:
+      type: object
+      required:
+        - routeCode
+        - baseFare
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int64
+        routeCode:
+          type: string
+          maxLength: 40
+        distanceKm:
+          type: number
+        baseFare:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        isDeleted:
+          type: boolean
+
+    SeatLockRequestDTO:
+      type: object
+      required:
+        - tripId
+        - seatIds
+      properties:
+        tripId:
+          type: integer
+          format: int64
+        seatIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        lockGroupId:
+          type: string
+        timeoutMinutes:
+          type: integer
+
+    SeatLockResponseDTO:
+      type: object
+      properties:
+        success:
+          type: boolean
+        lockGroupId:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+

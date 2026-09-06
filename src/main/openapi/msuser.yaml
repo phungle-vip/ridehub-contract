@@ -1,0 +1,162 @@
+openapi: 3.0.3
+info:
+  title: RideHub User Service API
+  version: 0.1.0
+  description: API contract cho ms_user - Quản lý người dùng, hồ sơ cá nhân, xác thực OTP và chatbot.
+servers:
+  - url: http://localhost:8081/api
+    description: Local Dev Server
+  - url: https://apigateway.phungvip.io.vn/services/msuser/api
+    description: Gateway Proxy
+
+paths:
+  /app-users:
+    post:
+      summary: Tạo người dùng mới
+      operationId: createAppUser
+      tags:
+        - app-user-resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppUserDTO'
+      responses:
+        '201':
+          description: Người dùng được tạo thành công
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUserDTO'
+    get:
+      summary: Lấy danh sách người dùng (phân trang)
+      operationId: getAllAppUsers
+      tags:
+        - app-user-resource
+      responses:
+        '200':
+          description: Danh sách người dùng
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppUserDTO'
+
+  /app-users/{id}:
+    get:
+      summary: Lấy chi tiết người dùng
+      operationId: getAppUser
+      tags:
+        - app-user-resource
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Chi tiết người dùng
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUserDTO'
+
+  /auth/send-otp:
+    post:
+      summary: Gửi mã OTP xác thực
+      operationId: sendOtp
+      tags:
+        - auth-resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phoneNumber
+              properties:
+                phoneNumber:
+                  type: string
+      responses:
+        '200':
+          description: OTP đã được gửi
+
+  /auth/verify-otp:
+    post:
+      summary: Xác thực mã OTP
+      operationId: verifyOtp
+      tags:
+        - auth-resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phoneNumber
+                - otpCode
+              properties:
+                phoneNumber:
+                  type: string
+                otpCode:
+                  type: string
+      responses:
+        '200':
+          description: Xác thực thành công
+
+components:
+  schemas:
+    AppUserDTO:
+      type: object
+      required:
+        - keycloakId
+        - email
+        - isActive
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int64
+        keycloakId:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        phoneNumber:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        isVerified:
+          type: boolean
+        isActive:
+          type: boolean
+        lastLoginAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        isDeleted:
+          type: boolean
+        deletedAt:
+          type: string
+          format: date-time
+        deletedBy:
+          type: string
+          format: uuid
+

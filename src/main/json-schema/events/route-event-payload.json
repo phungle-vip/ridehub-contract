@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ridehub.com/schemas/events/route-event-payload.json",
+  "title": "RouteEventPayload",
+  "description": "Schema cho payload bên trong EventEnvelope khi eventName = route.*",
+  "type": "object",
+  "properties": {
+    "id": { "type": "integer", "format": "int64" },
+    "routeCode": { "type": "string", "maxLength": 40 },
+    "distanceKm": { "type": ["number", "null"] },
+    "baseFare": { "type": "number", "description": "Giá cơ bản cho tuyến đường" },
+    "origin": {
+      "type": "object",
+      "description": "Trạm xuất phát",
+      "properties": {
+        "id": { "type": "integer", "format": "int64" },
+        "name": { "type": "string" },
+        "address": { "type": ["string", "null"] }
+      },
+      "required": ["id", "name"]
+    },
+    "destination": {
+      "type": "object",
+      "description": "Trạm đến",
+      "properties": {
+        "id": { "type": "integer", "format": "int64" },
+        "name": { "type": "string" },
+        "address": { "type": ["string", "null"] }
+      },
+      "required": ["id", "name"]
+    }
+  },
+  "allOf": [
+    { "$ref": "../common/audit-fields.json" }
+  ],
+  "required": ["routeCode", "baseFare", "origin", "destination", "createdAt"]
+}

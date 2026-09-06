@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ridehub.com/schemas/events/event-envelope.json",
+  "title": "EventEnvelope",
+  "description": "JSON Schema representation của Avro EventEnvelope — wrapper cho tất cả Kafka events",
+  "type": "object",
+  "properties": {
+    "eventName": {
+      "type": "string",
+      "description": "Tên domain event",
+      "examples": [
+        "booking.created",
+        "booking.updated",
+        "booking.deleted",
+        "user.created",
+        "user.updated",
+        "user.deleted",
+        "route.created",
+        "route.updated",
+        "route.deleted",
+        "promotion.created",
+        "promotion.updated",
+        "promotion.deleted"
+      ]
+    },
+    "payload": {
+      "type": ["string", "null"],
+      "description": "Business payload serialize dưới dạng JSON string"
+    },
+    "payloadType": {
+      "type": ["string", "null"],
+      "description": "Fully qualified class name của payload type để deserialize",
+      "examples": [
+        "com.ridehub.booking.service.dto.BookingDTO",
+        "com.ridehub.user.service.dto.AppUserDTO",
+        "com.ridehub.route.service.dto.RouteDTO",
+        "com.ridehub.promotion.service.dto.PromotionDTO"
+      ]
+    }
+  },
+  "required": ["eventName"]
+}

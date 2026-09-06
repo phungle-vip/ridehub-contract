@@ -1,0 +1,6 @@
+{
+  "eventName": "promotion.created",
+  "payload": "{\"id\":4001,\"code\":\"SUMMER2026\",\"description\":\"Giảm 20% cho chuyến hè\",\"startDate\":\"2026-06-01\",\"endDate\":\"2026-08-31\",\"usageLimit\":1000,\"usedCount\":0,\"createdAt\":\"2026-09-06T10:00:00Z\"}",
+  "payloadType": "com.ridehub.promotion.service.dto.PromotionDTO"
+}
+

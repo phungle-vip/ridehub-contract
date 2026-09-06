@@ -1,0 +1,101 @@
+openapi: 3.0.3
+info:
+  title: RideHub Promotion Service API
+  version: 0.1.0
+  description: API contract cho ms_promotion - Quản lý chương trình khuyến mãi, giảm giá và điều kiện áp dụng.
+servers:
+  - url: http://localhost:8084/api
+    description: Local Dev Server
+  - url: https://apigateway.phungvip.io.vn/services/mspromotion/api
+    description: Gateway Proxy
+
+paths:
+  /promotions:
+    get:
+      summary: Lấy danh sách chương trình khuyến mãi
+      operationId: getAllPromotions
+      tags:
+        - promotion-resource
+      responses:
+        '200':
+          description: Danh sách khuyến mãi
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PromotionDTO'
+    post:
+      summary: Tạo mới chương trình khuyến mãi
+      operationId: createPromotion
+      tags:
+        - promotion-resource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromotionDTO'
+      responses:
+        '201':
+          description: Khuyến mãi đã tạo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromotionDTO'
+
+  /promotions/{id}:
+    get:
+      summary: Lấy chi tiết khuyến mãi theo ID
+      operationId: getPromotion
+      tags:
+        - promotion-resource
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Chi tiết khuyến mãi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromotionDTO'
+
+components:
+  schemas:
+    PromotionDTO:
+      type: object
+      required:
+        - code
+        - createdAt
+      properties:
+        id:
+          type: integer
+          format: int64
+        code:
+          type: string
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        usageLimit:
+          type: integer
+        usedCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        isDeleted:
+          type: boolean
+

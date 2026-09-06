@@ -1,0 +1,6 @@
+{
+  "eventName": "route.created",
+  "payload": "{\"id\":3001,\"routeCode\":\"ROUTE-SG-DL\",\"distanceKm\":305.5,\"baseFare\":280000.00,\"origin\":{\"id\":10,\"name\":\"Bến xe Miền Đông\"},\"destination\":{\"id\":20,\"name\":\"Bến xe Đà Lạt\"},\"createdAt\":\"2026-09-06T10:00:00Z\"}",
+  "payloadType": "com.ridehub.route.service.dto.RouteDTO"
+}
+

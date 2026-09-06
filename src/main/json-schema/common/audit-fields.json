@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ridehub.com/schemas/common/audit-fields.json",
+  "title": "AuditFields",
+  "description": "Shared audit fields dùng chung cho tất cả domain entities trong RideHub",
+  "type": "object",
+  "properties": {
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Thời điểm tạo record (ISO 8601)"
+    },
+    "updatedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Thời điểm cập nhật gần nhất"
+    },
+    "isDeleted": {
+      "type": ["boolean", "null"],
+      "default": false,
+      "description": "Soft-delete flag"
+    },
+    "deletedAt": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Thời điểm soft-delete"
+    },
+    "deletedBy": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "UUID của user thực hiện soft-delete"
+    }
+  },
+  "required": ["createdAt"]
+}

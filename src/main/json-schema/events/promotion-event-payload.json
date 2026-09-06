@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ridehub.com/schemas/events/promotion-event-payload.json",
+  "title": "PromotionEventPayload",
+  "description": "Schema cho payload bên trong EventEnvelope khi eventName = promotion.*",
+  "type": "object",
+  "properties": {
+    "id": { "type": "integer", "format": "int64" },
+    "code": { "type": "string", "description": "Mã khuyến mãi" },
+    "description": { "type": ["string", "null"] },
+    "startDate": { "type": ["string", "null"], "format": "date" },
+    "endDate": { "type": ["string", "null"], "format": "date" },
+    "usageLimit": { "type": ["integer", "null"], "description": "Giới hạn số lần sử dụng" },
+    "usedCount": { "type": ["integer", "null"], "description": "Số lần đã sử dụng" }
+  },
+  "allOf": [
+    { "$ref": "../common/audit-fields.json" }
+  ],
+  "required": ["code", "createdAt"]
+}
