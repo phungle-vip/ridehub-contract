@@ -19,9 +19,9 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-          server-id: github
-          server-username: ${{ github.actor }}
-          server-password: ${{ secrets.GITHUB_TOKEN }}
+          server-id: ridehub-releases
+          server-username: ${{ secrets.REPOSILITE_USER || 'admin' }}
+          server-password: ${{ secrets.REPOSILITE_TOKEN }}
 
       - name: Extract version from tag
         run: |
@@ -36,5 +36,5 @@ jobs:
       - name: Build and Package
         run: ./mvnw -B clean package -DskipTests
 
-      - name: Deploy to GitHub Packages
+      - name: Deploy to Reposilite
         run: ./mvnw -B deploy -DskipTests
