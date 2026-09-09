@@ -2,6 +2,8 @@ name: Publish Contract Maven Package
 
 on:
   push:
+    branches:
+      - main
     tags:
       - "v*.*.*"
 
@@ -23,14 +25,36 @@ jobs:
           server-username: ${{ secrets.REPOSILITE_USER || 'admin' }}
           server-password: ${{ secrets.REPOSILITE_TOKEN }}
 
+      - name: Configure Maven Snapshots Server Auth
+        run: |
+          mkdir -p ~/.m2
+          cat << 'EOF' > ~/.m2/settings.xml
+          <settings>
+            <servers>
+              <server>
+                <id>ridehub-releases</id>
+                <username>${{ secrets.REPOSILITE_USER || 'admin' }}</username>
+                <password>${{ secrets.REPOSILITE_TOKEN }}</password>
+              </server>
+              <server>
+                <id>ridehub-snapshots</id>
+                <username>${{ secrets.REPOSILITE_USER || 'admin' }}</username>
+                <password>${{ secrets.REPOSILITE_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+
       - name: Extract version from tag
+        if: startsWith(github.ref, 'refs/tags/v')
         run: |
           TAG="${GITHUB_REF##*/}"
           VERSION="${TAG#v}"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "Publishing version: $VERSION"
+          echo "Publishing release version: $VERSION"
 
-      - name: Set Maven version
+      - name: Set Maven release version
+        if: startsWith(github.ref, 'refs/tags/v')
         run: ./mvnw -B versions:set -DnewVersion=${VERSION} -DgenerateBackupPoms=false
 
       - name: Build and Package
